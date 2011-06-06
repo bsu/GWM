@@ -1,0 +1,173 @@
+# Django settings for ganeti_webmgr project.
+
+import os.path
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+# XXX - Django sets DEBUG to False when running unittests.  They want to ensure
+# that you test as if it were a production environment.  Unfortunately we have
+# some models and other settings used only for testing.  We use the TESTING flag
+# to enable or disable these items.
+#
+# If you run the unittests without this set to TRUE, you will get many errors!
+TESTING = False
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'ganeti.db'             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
+DATABASE_PASSWORD = ''         # Not used with sqlite3.
+DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+
+## XXX - If you are using postgresql_psycopg2 makesure to enable this option
+## or else you will not be able to run syncdb.
+#DATABASE_OPTIONS = {
+#    'autocommit': True 
+#}
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
+TIME_ZONE = 'America/Los_Angeles'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+# Unique site id used by many modules to distinguish site from others.
+SITE_ID = 1
+
+# Site name and domain referenced by some modules to provide links back to
+#  the site.
+SITE_NAME = 'Ganeti Web Manager'
+SITE_DOMAIN = 'localhost:8000'
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# absolute path to the docroot of this site
+DOC_ROOT = os.path.dirname(os.path.realpath(__file__))
+
+# prefix used for the site.  ie. http://myhost.com/<SITE_ROOT>
+# for the django standalone server this should be ''
+# for apache this is the url the site is mapped to, probably /tracker
+SITE_ROOT = ''
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = '%s/media' % DOC_ROOT
+
+# URL that handles the media served from MEDIA_ROOT.
+# XXX contrary to django docs, do not use a trailling slash.  It makes urls
+# using this url easier to read.  ie.  {{MEDIA_URL}}/images/foo.png
+MEDIA_URL = '%s/media' % SITE_ROOT
+
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/".
+ADMIN_MEDIA_PREFIX = '/adminmedia/'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '!c&bm88vo=gby*vxf2gydv8hc!+f+eo+yu&!g&!)#n5quwsr82'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'object_permissions.backend.ObjectPermBackend',
+)
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.load_template_source',
+    'django.template.loaders.app_directories.load_template_source',
+#     'django.template.loaders.eggs.load_template_source',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.csrf.CsrfResponseMiddleware'
+)
+
+ROOT_URLCONF = 'urls'
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    'templates/'
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'registration',
+    'object_permissions',
+    'ganeti',
+    'object_log',
+    'south'
+)
+
+AUTH_PROFILE_MODULE = 'ganeti.Profile'
+LOGIN_REDIRECT_URL = '/'
+
+DATE_FORMAT = "d/m/Y H:i"
+DATETIME_FORMAT = "d/m/Y H:i"
+
+ACCOUNT_ACTIVATION_DAYS = 7
+
+# Email settings for registration
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "25"
+# DEFAULT_FROM_EMAIL = "noreply@example.org"
+
+# default items per page
+ITEMS_PER_PAGE = 10
+
+# Ganeti Cached Cluster Objects Timeouts
+#    lazy cache is the fallback cache timer that is checked when the object is
+#    instantiated.
+#
+#    periodic cache timer is for use by an outside process such as Celery or
+#    or cron which updates the cache on a set interval to ensure that data is
+#    always up to date.
+LAZY_CACHE_REFRESH = 60000
+PERIODIC_CACHE_REFRESH = 15
+
+# Enable the VNC proxy.  When enabled this will use the proxy to create local
+# ports that are forwarded to the virtual machines.  It allows you to control
+# access to the VNC servers.  When disabled, the console tab will connect 
+# directly to the VNC server running on the virtual machine.
+#
+# Expected values: False if no proxy, string with proxy host and port otherwise
+# String syntax: "HOST:PORT", for example: "localhost:8888". Instead of
+# "localhost" you should use the hostname of your proxy server.
+#
+# Note: you will probably have to open more ports in firewall. For proxy's default
+# settings, it uses port 8888 for listening for requests and ports 7000..8000
+# for serving proxy.
+#
+VNC_PROXY='localhost:8888'
+
+
+# API Key for authenticating scripts that pull information from ganeti, such as
+# list of sshkey's to assign to a virtual machine
+#
+# XXX this is a temporary feature that will eventually be replaced by a system
+#     that automatically creates keys per virtual machine.  This is just a quick
+#     way of enabled a secure method to pull sshkeys from ganeti web manager
+WEB_MGR_API_KEY = "CHANGE_ME"

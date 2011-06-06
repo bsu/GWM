@@ -1,0 +1,33 @@
+{% load object_permission_tags %}
+{% load webmgr_tags %}
+
+<html>
+    <head>
+    <title>{% block title %}Ganeti Web Manager{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/base.css"/>
+    {% block basehead %}{% endblock %}
+    {% block head %}{% endblock %}
+    </head>
+    <body>
+
+    <div id="body_wrapper">
+        <div id="header_strip"></div>
+        <div id="header">
+            <a href="/" id="logo"><img src="{{MEDIA_URL}}/logo.png"/></a>
+            {% block inner_header %}{% endblock %}
+        </div>
+        <div id="content_wrapper">
+            <div id="content_column">
+                {% block navigation %}{% endblock %}
+                <div id="content">
+                    {% block content %}{% endblock %}
+                </div>
+                <div class="floatfix"></div>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        A Project by the <a href="https://osuosl.org">Oregon State University Open Source Lab</a>.
+    </div>
+    </body>
+</html>
